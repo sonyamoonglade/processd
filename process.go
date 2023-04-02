@@ -24,10 +24,11 @@ func pidByName(pname string) (string, error) {
 }
 
 func runScript(script string) error {
-	err := exec.Command(script).Start()
-	if err != nil {
+	cmd := exec.Command(script)
+	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("script unable to run: %w", err)
 	}
+	defer cmd.Process.Kill()
 	// Give time to boot up
 	time.Sleep(time.Millisecond * 500)
 	return nil
